@@ -38,19 +38,24 @@ isPalindrome str = str == reverse str
 main :: IO ()
 main = do
     putStrLn "Enter a string:"
-    input <- getLine
+   
+    let input = "madam"  
     if isPalindrome input
         then putStrLn "It's a palindrome!"
         else putStrLn "It's not a palindrome."
 
 -- HC12T6: Sort a List of Integers
+
+import Data.List (sort)  
 main :: IO ()
 main = do
     putStrLn "Enter a list of integers separated by spaces:"
-    input <- getLine
+
+    let input = "5 1 9 2 6"  
     let numbers = map read (words input) :: [Int]
     let sorted = sort numbers
     print sorted
+
 
 -- HC12T7: Calculate Circle Area
 calculateCircleArea :: Float -> Float
@@ -81,6 +86,14 @@ main :: IO ()
 main = do
     content <- readFile "example.txt"
     putStrLn content
+
+       OR:
+-- HC12T9: Simulated File Read
+main :: IO ()
+main = do
+    let content = "Simulated file content: Hello from the file!"
+    putStrLn content
+
 
 -- HC12T10: Mathematical Operations Module
 module MathOperations where
