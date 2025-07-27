@@ -1,6 +1,5 @@
 -- HC10T1: ShowSimple Type Class
-class ShowSimple a where
-    showSimple :: a -> String
+class ShowSimple a where showSimple :: a -> String
 
 data PaymentMethod = CreditCard String | Cash Double deriving Show
 
@@ -14,15 +13,15 @@ main = do
     print $ showSimple payment
 
 -- HC10T2: Summable Type Class
-class Summable a where
-    sumUp :: [a] -> a
+class Summable a where  
+  sumUp :: [a] -> a
 
-instance Summable Int where
-    sumUp = sum
+instance Summable Int where 
+  sumUp = sum
 
 main :: IO ()
 main = do
-    print $ sumUp [1, 2, 3, 4]
+  print $ sumUp ([1, 2, 3, 4] :: [Int])
 
 -- HC10T3: Comparable Type Class
 class Comparable a where
@@ -80,17 +79,21 @@ main = do
     print $ blockchain1 == blockchain3
 
 -- HC10T7: Convertible Type Class
+
+data PaymentMethod = CreditCard String | Cash Int deriving (Show)
+
 class Convertible a b where
     convert :: a -> b
 
 instance Convertible PaymentMethod String where
     convert (CreditCard _) = "Credit Card"
-    convert (Cash _) = "Cash"
+    convert (Cash _)       = "Cash"
 
 main :: IO ()
 main = do
     let paymentMethod = CreditCard "1234-5678-9876-5432"
-    print $ convert paymentMethod
+    print (convert paymentMethod :: String)
+
 
 -- HC10T8: AdvancedEq Subclass of Eq
 class Eq a => AdvancedEq a where
@@ -105,7 +108,7 @@ main = do
     print $ compareEquality "hello" "world"
 
 -- HC10T9: MinMax Type Class
-class MinMax a where
+class Bounded a => MinMax a where
     minValue :: a
     maxValue :: a
 
@@ -115,8 +118,9 @@ instance MinMax Int where
 
 main :: IO ()
 main = do
-    print minValue
-    print maxValue
+    print (minValue :: Int)
+    print (maxValue :: Int)
+
 
 -- HC10T10: Concatenatable Type Class
 class Concatenatable a where
