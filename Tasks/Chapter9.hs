@@ -17,31 +17,45 @@ main = do
     print box2
 
 -- HC9T3: Function to Add Values in a Box
+data Box a = Empty | Has a deriving (Show)
+
 addN :: (Num a) => a -> Box a -> Box a
-addN _ Empty = Empty
-addN n (Has x) = Has (x + n)
+addN _ Empty    = Empty
+addN n (Has x)  = Has (x + n)
+
 
 main :: IO ()
 main = do
     let boxWithValue = Has 10
+    let emptyBox = Empty :: Box Int
     let result = addN 5 boxWithValue
-    print result
+    let resultEmpty = addN 5 emptyBox
+    print result       
+    print resultEmpty 
+
 
 -- HC9T4: Extract a Value from a Box
+
+data Box a = Empty | Has a deriving (Show)
+
+
 extract :: a -> Box a -> a
 extract def Empty = def
-extract _ (Has x) = x
+extract _ (Has x)  = x
+
 
 main :: IO ()
 main = do
     let extractedValue = extract 0 (Has 15)
-    print extractedValue
+    print extractedValue  
+
+    let extractedFromEmpty = extract 42 Empty
+    print extractedFromEmpty  
+
 
 -- HC9T5: Parametric Data Type with Record Syntax
-data Shape a = Circle { color :: a, radius :: Double } 
-             | Rectangle { color :: a, width :: Double, height :: Double } 
-             deriving Show
-
+data Shape a = Circle { color :: a, radius :: Double } | Rectangle { color :: a, width :: Double, height :: Double } deriving Show
+            
 main :: IO ()
 main = do
     let circle = Circle { color = "Red", radius = 5.0 }
@@ -58,6 +72,8 @@ main = do
     print tweet
 
 -- HC9T7: Engagement Function for Tweets
+data Tweet = Tweet { content :: String, likes :: Int, comments :: [Tweet]} deriving (Show)
+
 engagement :: Tweet -> Int
 engagement tweet = likes tweet + sum (map engagement (comments tweet))
 
@@ -65,7 +81,8 @@ main :: IO ()
 main = do
     let tweet = Tweet { content = "Hello Haskell!", likes = 100, comments = [] }
     let engagementResult = engagement tweet
-    print engagementResult
+    print engagementResult 
+
 
 -- HC9T8: Recursive Sequence Data Type
 data Sequence a = EmptySeq | Node a (Sequence a) deriving Show
