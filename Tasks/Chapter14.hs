@@ -34,68 +34,39 @@ main = do
     print number
 
 -- HC14T5: Custom Data Type and Pattern Matching with @
+
 data Result a = Success a | Failure String
+
+printResult :: Show a => Result a -> IO ()
+printResult res@(Success val) = putStrLn $ "Success with value: " ++ show val
+printResult res@(Failure msg) = putStrLn $ "Failure: " ++ msg
 
 main :: IO ()
 main = do
-    let result1 = Success 42
-    let result2 = Failure "Error occurred"
-    
-    case result1 of
-        Success val -> putStrLn $ "Success with value: " ++ show val
-        Failure msg -> putStrLn $ "Failure: " ++ msg
-    
-    case result2 of
-        Success val -> putStrLn $ "Success with value: " ++ show val
-        Failure msg -> putStrLn $ "Failure: " ++ msg
+    let result1 = Success 42 :: Result Int                 
+    let result2 = Failure "Error occurred" :: Result Int  
 
+    printResult result1
+    printResult result2
+    
 -- HC14T6: Project Structure: src and app
--- Steps to create a project structure:
--- 1. Run `cabal init` and choose `app` and `lib` components.
--- 2. Create the structure like so:
---    myproject/
---      ├── app/
---      │   └── Main.hs
---      └── src/
---          └── MyModule.hs
-
--- Main.hs
-module Main where
-import MyModule (greet)
-
-main :: IO ()
-main = greet
-
--- MyModule.hs
-module MyModule where
 
 greet :: IO ()
 greet = putStrLn "Hello from MyModule!"
 
 
--- HC14T7: Library Component in Cabal
--- Add a library component in your `.cabal` file:
--- library
---   exposed-modules:     MyLibrary
---   other-modules:       Paths_myproject
+main :: IO ()
+main = greet
 
--- Then, in the `src/MyLibrary.hs`:
-module MyLibrary where
+-- HC14T7: Library Component in Cabal
+
+module Main where
 
 sayHello :: IO ()
 sayHello = putStrLn "Hello from the library!"
 
--- HC14T7: Library Component in Cabal
--- Add a library component in your `.cabal` file:
--- library
---   exposed-modules:     MyLibrary
---   other-modules:       Paths_myproject
-
--- Then, in the `src/MyLibrary.hs`:
-module MyLibrary where
-
-sayHello :: IO ()
-sayHello = putStrLn "Hello from the library!"
+main :: IO ()
+main = sayHello
 
 -- HC14T8: Character Frequency Function
 import Data.List (group, sort)
