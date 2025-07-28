@@ -36,50 +36,50 @@ main = do
     mapM_ putStrLn sortedFiles
 
 -- HC13T4: SumNonEmpty Module
-module SumNonEmpty (sumNonEmpty) where
-
 sumNonEmpty :: (Num a) => [a] -> a
 sumNonEmpty [] = error "Empty list"
 sumNonEmpty xs = sum xs
 
 main :: IO ()
 main = do
-    print $ sumNonEmpty [1, 2, 3, 4]  -- 10
-    -- Uncomment the following to see the error for an empty list:
-    -- print $ sumNonEmpty []  -- Will throw error
+    print $ sumNonEmpty [1, 2, 3, 4]  
 
 -- HC13T5: Restrict Module Export List
-module SumNonEmpty (sumNonEmpty) where
 
-sumNonEmpty :: (Num a) => [a] -> a
+sumNonEmpty :: Num a => [a] -> a
 sumNonEmpty [] = error "Empty list"
 sumNonEmpty xs = sum xs
 
--- Helper function not exported:
--- sumHelper :: (Num a) => [a] -> a
--- sumHelper = sum
+main :: IO ()
+main = do
+    print $ sumNonEmpty [1, 2, 3, 4]  
+    print $ sumNonEmpty [5, 5, 5]     
+
 
 -- HC13T6: File Names to Map
 import System.Directory (listDirectory)
-import Data.Map (fromList)
+import Data.Map (Map, fromList)
 
-fileNamesToMap :: IO (Data.Map.Map String Int)
+fileNamesToMap :: IO (Map String Int)
 fileNamesToMap = do
     files <- listDirectory "."
-    return $ fromList $ zip files [1..]  -- Map filenames to unique IDs
+    return $ fromList $ zip files [1..]
 
 main :: IO ()
 main = do
     fileMap <- fileNamesToMap
     print fileMap
 
+
 -- HC13T7: Use Custom Module in Main
-import SumNonEmpty (sumNonEmpty)
+sumNonEmpty :: Num a => [a] -> a
+sumNonEmpty [] = error "Empty list"
+sumNonEmpty xs = sum xs
 
 main :: IO ()
 main = do
-    print $ sumNonEmpty [1, 2, 3, 4]  -- 10
-    print $ sumNonEmpty [5, 5, 5]     -- 15
+    print $ sumNonEmpty [1, 2, 3, 4]  
+    print $ sumNonEmpty [5, 5, 5] 
 
 -- HC13T8: Qualified Imports for Name Conflicts
 import qualified Data.List as L
@@ -104,6 +104,7 @@ main = do
     mapM_ putStrLn sortedFiles
 
 -- HC13T10: Multi-Module Main Function
+
 import System.Directory (listDirectory)
 import Data.List (sort, isInfixOf)
 
@@ -115,5 +116,8 @@ filterAndSortFiles substring = do
 
 main :: IO ()
 main = do
-    sortedFiles <- filterAndSortFiles "log"  -- Example: files containing "log"
-    mapM_ putStrLn sortedFiles
+    sortedFiles <- filterAndSortFiles "log"  
+    if null sortedFiles
+        then putStrLn "No files found containing the substring."
+        else mapM_ putStrLn sortedFiles
+
