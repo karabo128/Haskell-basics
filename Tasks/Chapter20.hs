@@ -82,7 +82,8 @@ findFirst p (x:xs)
 main :: IO ()
 main = do
     print (findFirst even [1, 3, 5, 4])  
-    print (findFirst even [1, 3, 5])    
+    print (findFirst even [1, 3, 5])  
+    
 -- HC20T8: Parser Monad for Simple Expressions
 import Control.Monad.State
 
@@ -92,18 +93,19 @@ parseDigit :: Parser Int
 parseDigit = do
     s <- get
     case s of
-        (c:cs) | c `elem` ['0'..'9'] -> put cs >> return (read [c])
+        (c:cs) | c `elem` ['0'..'9'] -> do
+            put cs
+            return (Just (read [c]))
         _ -> return Nothing
 
 parseExpr :: Parser Int
-parseExpr = do
-    x <- parseDigit
-    return x
+parseExpr = parseDigit
 
 main :: IO ()
 main = do
-    let (result, _) = runState parseExpr "123abc"
-    print result 
+    let (result, remaining) = runState parseExpr "123abc"
+    print result        
+    print remaining     
 
 -- HC20T9: replicateMonad with Identity Monad
 import Control.Monad.Identity
@@ -118,17 +120,18 @@ main = do
 -- HC20T10: Nested StateT and MaybeT Transformer
 import Control.Monad.State
 import Control.Monad.Trans.Maybe
-import Control.Monad.Trans.State
+import Control.Monad.Trans.Class (lift)
 
 type MyStateT = StateT Int (MaybeT IO)
 
 nestedStateT :: MyStateT String
 nestedStateT = do
     modify (+ 1)
-    x <- lift (MaybeT (return (Just "Success")))
+    x <- lift (return "Success")  
     return x
 
 main :: IO ()
 main = do
     result <- runMaybeT (evalStateT nestedStateT 0)
-    print result  "
+    print result
+
