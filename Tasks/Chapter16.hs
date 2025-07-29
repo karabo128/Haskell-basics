@@ -36,10 +36,10 @@ main = do
     putStrLn $ "Even numbers: " ++ show (filterEven nums)
 
 -- HC16T5: Uppercase String
+import Data.Char (toUpper)
+
 uppercaseString :: String -> String
 uppercaseString = map toUpper
-
-import Data.Char (toUpper)
 
 main :: IO ()
 main = do
