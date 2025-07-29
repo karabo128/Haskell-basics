@@ -1,9 +1,10 @@
 -- HC19T1: Applicative Instance for Pair
--- Define a Pair data type
 data Pair a = Pair a a
   deriving (Show, Eq)
 
--- Define the Applicative instance for Pair
+instance Functor Pair where
+  fmap f (Pair x y) = Pair (f x) (f y)
+
 instance Applicative Pair where
   pure x = Pair x x
   Pair f g <*> Pair x y = Pair (f x) (g y)
@@ -12,11 +13,15 @@ main :: IO ()
 main = do
     let pair1 = Pair (+1) (*2)
     let pair2 = Pair 3 4
-    print (pair1 <*> pair2)  
+    print (pair1 <*> pair2)
+
 
 -- HC19T2: addThreeApplicative Function
+addThree :: Int -> Int -> Int -> Int
+addThree a b c = a + b + c
+
 addThreeApplicative :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
-addThreeApplicative x y z = (+) <$> x <*> y <*> z
+addThreeApplicative x y z = addThree <$> x <*> y <*> z
 
 main :: IO ()
 main = do
@@ -30,22 +35,22 @@ safeProduct = foldr (\x acc -> (*) <$> x <*> acc) (Just 1)
 main :: IO ()
 main = do
     let nums = [Just 2, Just 3, Just 4]
-    let result = safeProduct nums
-    print result 
+    print (safeProduct nums) 
+    
     let numsWithNothing = [Just 2, Nothing, Just 4]
-    print (safeProduct numsWithNothing)  
+    print (safeProduct numsWithNothing) 
 
 -- HC19T4: liftAndMultiply with liftA2
-liftAndMultiply :: Int -> Int -> Maybe Int
-liftAndMultiply = liftA2 (*) (Just 3) (Just 4)
+import Control.Applicative (liftA2)
+
+liftAndMultiply :: Maybe Int -> Maybe Int -> Maybe Int
+liftAndMultiply = liftA2 (*)
 
 main :: IO ()
 main = do
-    print (liftAndMultiply 3 4)  
+    print (liftAndMultiply (Just 3) (Just 4))  
 
 -- HC19T5: applyEffects with <*>
-import Control.Monad (when)
-
 applyEffects :: IO Int -> IO Int -> IO Int
 applyEffects action1 action2 = do
     x <- action1
@@ -58,7 +63,9 @@ main :: IO ()
 main = do
     let action1 = return 5
     let action2 = return 10
-    applyEffects action1 action2  
+    _ <- applyEffects action1 action2
+    return ()
+
 
 -- HC19T6: repeatEffect with forever
 import Control.Monad (forever)
@@ -99,11 +106,13 @@ main = do
     let result = pureAndApply (Just 5) (Just 3)
     print result  
 
+
 -- HC19T10: combineResults for Either
+
 combineResults :: Either String Int -> Either String Int -> Either String Int
-combineResults = (<*>) <$> pure (+) <*> <*> 
+combineResults x y = pure (+) <*> x <*> y
 
 main :: IO ()
 main = do
-    print (combineResults (Right 3) (Right 5))  
+    print (combineResults (Right 3) (Right 5))        
     print (combineResults (Right 3) (Left "Error"))  
