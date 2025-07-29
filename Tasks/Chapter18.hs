@@ -23,13 +23,20 @@ main = do
     print (fmap (*2) tree)  
 
 -- HC18T3: incrementTreeValues Function
+
+data Tree a = Leaf a | Node (Tree a) (Tree a) deriving (Show, Eq)
+
+instance Functor Tree where
+  fmap f (Leaf x) = Leaf (f x)
+  fmap f (Node left right) = Node (fmap f left) (fmap f right)
+
 incrementTreeValues :: Num a => Tree a -> Tree a
 incrementTreeValues = fmap (+1)
 
 main :: IO ()
 main = do
     let tree = Node (Leaf 1) (Node (Leaf 2) (Leaf 3))
-    print (incrementTreeValues tree)  
+    print (incrementTreeValues tree)
 
 -- HC18T4: mapToBits Function
 mapToBits :: [Bool] -> [Char]
@@ -41,10 +48,6 @@ main = do
     putStrLn $ "Mapped to bits: " ++ mapToBits boolList  
 
 -- HC18T5: Functor Instance for Either
-instance Functor (Either a) where
-  fmap _ (Left x) = Left x
-  fmap f (Right x) = Right (f x)
-
 main :: IO ()
 main = do
     let result1 = fmap (+1) (Right 5)
