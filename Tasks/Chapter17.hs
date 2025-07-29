@@ -43,18 +43,24 @@ main = do
     print (minVal <> Min 5)  
     print (maxVal <> Max 25) 
 
-    -- HC17T3: Monoid Instance for Severity
+ -- HC17T3: Monoid Instance for Severity
+data Severity = Low | Medium | High | Critical
+  deriving (Show, Eq, Ord)
+
+instance Semigroup Severity where
+  (<>) = max
+
 instance Monoid Severity where
   mempty = Low
-  mappend = (<>)
 
 main :: IO ()
 main = do
     let severity1 = Medium
     let severity2 = Critical
     let combined = severity1 <> severity2
-    print combined  
+    print combined        
     print (mempty :: Severity)  
+
 
 -- HC17T4: Monoid Instance for Sum Newtype
 newtype Sum a = Sum { getSum :: a } deriving (Show, Eq)
@@ -81,16 +87,25 @@ main :: IO ()
 main = do
     let list1 = [1, 2, 3]
     let list2 = [4, 5, 6]
-    print (combineLists list1 list2)  ]
+    print (combineLists list1 list2)  
 
 -- HC17T6: maxSeverity Function
+data Severity = Low | Medium | High | Critical
+  deriving (Show, Eq, Ord)
+
+instance Semigroup Severity where
+  (<>) = max
+
+instance Monoid Severity where
+  mempty = Low
+
 maxSeverity :: [Severity] -> Severity
 maxSeverity = mconcat
 
 main :: IO ()
 main = do
     let severities = [Low, High, Medium, Critical]
-    print (maxSeverity severities)  
+    print (maxSeverity severities)
 
 -- HC17T7: multiplyProducts Function
 newtype Product a = Product { getProduct :: a } deriving (Show, Eq)
@@ -111,13 +126,16 @@ main = do
 
 
 -- HC17T8: foldWithSemigroup Function
-foldWithSemigroup :: Semigroup a => [a] -> a
+import Data.Monoid (Sum(..))
+
+foldWithSemigroup :: Monoid a => [a] -> a
 foldWithSemigroup = foldr (<>) mempty
 
 main :: IO ()
 main = do
-    let numbers = [1, 2, 3, 4]
-    print (foldWithSemigroup numbers) 
+    let numbers = map Sum [1, 2, 3, 4]  
+    let result = foldWithSemigroup numbers
+    print $ getSum result                
 
 -- HC17T9: Config Data Type and Semigroup Instance
 data Config = Config { loggingLevel :: Int, timeout :: Int, retries :: Int }
@@ -134,17 +152,28 @@ main = do
     print (config1 <> config2)  
 
 -- HC17T10: Monoid Instance for Config
+data Config = Config
+  { timeout    :: Int
+  , maxRetries :: Int
+  , delay      :: Int
+  } deriving (Show)
+
+instance Semigroup Config where
+  Config t1 r1 d1 <> Config t2 r2 d2 = Config
+    (max t1 t2)      
+    (min r1 r2)      
+    (d1 + d2)        
+
 instance Monoid Config where
   mempty = Config 0 maxBound 0
-  mappend = (<>)
 
 main :: IO ()
 main = do
     let config1 = Config 3 30 2
     let config2 = Config 5 20 3
-    print (config1 <> config2)  
-    print (mempty :: Config)  
 
+    print (config1 <> config2)  
+    print (mempty :: Config)     
 
     
 
