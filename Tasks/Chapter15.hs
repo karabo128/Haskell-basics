@@ -63,26 +63,28 @@ main = do
 -- HC15T4: Exception Handler for Traffic Light
 import Control.Exception
 
+data TrafficLight = Red | Yellow | Green
+  deriving (Show)
+
 data TrafficLightError = InvalidTrafficLight String
-    deriving Show
+  deriving Show
 
 instance Exception TrafficLightError
 
--- Using handler to catch exceptions
 validateTrafficLight :: String -> IO TrafficLight
-validateTrafficLight "Red"     = return Red
-validateTrafficLight "Green"   = return Green
-validateTrafficLight "Yellow"  = return Yellow
-validateTrafficLight invalid   = throwIO (InvalidTrafficLight invalid)
+validateTrafficLight "Red"    = return Red
+validateTrafficLight "Green"  = return Green
+validateTrafficLight "Yellow" = return Yellow
+validateTrafficLight invalid  = throwIO (InvalidTrafficLight invalid)
 
 main :: IO ()
 main = handle handler $ do
-    -- Test with an invalid traffic light
     validateTrafficLight "Blue"
     putStrLn "Traffic light is valid"
 
 handler :: TrafficLightError -> IO ()
 handler (InvalidTrafficLight err) = putStrLn ("Caught error: " ++ err)
+
 
 -- HC15T5: Safe Division Using Maybe
 safeDivide :: Double -> Double -> Maybe Double
@@ -104,11 +106,12 @@ parseInput = readMaybe
 
 main :: IO ()
 main = do
-    putStrLn "Enter a number:"
-    input <- getLine
+    let input = "123.45"  
+    putStrLn $ "Simulated input: " ++ input
     case parseInput input of
         Nothing -> putStrLn "Invalid input!"
         Just value -> print value
+
 
 -- HC15T7: Velocity Calculation with Optionals and Parsing Handling
 import Text.Read (readMaybe)
@@ -120,10 +123,11 @@ calculateVelocity distance time
 
 main :: IO ()
 main = do
-    putStrLn "Enter distance:"
-    distanceInput <- getLine
-    putStrLn "Enter time:"
-    timeInput <- getLine
+    let distanceInput = "100"  
+        timeInput = "0"        
+
+    putStrLn $ "Distance input: " ++ distanceInput
+    putStrLn $ "Time input: " ++ timeInput
 
     let maybeDistance = readMaybe distanceInput :: Maybe Double
         maybeTime = readMaybe timeInput :: Maybe Double
@@ -133,6 +137,7 @@ main = do
             Nothing -> putStrLn "Time cannot be zero."
             Just velocity -> print velocity
         _ -> putStrLn "Invalid input for distance or time."
+
 
         -- HC15T8: Division with Either for Detailed Errors
 safeDivide :: Double -> Double -> Either String Double
